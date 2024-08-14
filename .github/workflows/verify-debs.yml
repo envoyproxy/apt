@@ -1,0 +1,29 @@
+name: Verify
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches:
+    - main
+
+concurrency:
+  group: >-
+    ${{ github.event.inputs.head_ref || github.run_id }}
+
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
+    - run: |
+        DEV_COMMIT_ID=$(git ls-remote https://github.com/envoyproxy/envoy HEAD)
+        echo "DEV_COMMIT_ID=${DEV_COMMIT_ID}" >> $GITHUB_ENV
+    - run: |
+        bazel run --config=ci \
+                  --action_env="DEV_COMMIT_ID=${DEV_COMMIT_ID}" \
+                  --host_action_env="DEV_COMMIT_ID=${DEV_COMMIT_ID}" \
+                  :verify_debs
