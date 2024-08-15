@@ -32,7 +32,7 @@ jobs:
     - run: |
         VERSION=$(cat VERSION.txt)
         echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-        DEV_COMMIT_ID=$(git ls-remote https://github.com/envoyproxy/envoy refs/heads/main)
+        DEV_COMMIT_ID=$(git ls-remote https://github.com/envoyproxy/envoy refs/heads/main | cut -f1)
         echo "commit=${DEV_COMMIT_ID}" >> "$GITHUB_OUTPUT"
       id: envoy
       working-directory: envoy
