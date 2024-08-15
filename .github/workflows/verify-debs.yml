@@ -28,6 +28,7 @@ jobs:
         path: envoy
         sparse-checkout: |
           VERSION.txt
+        sparse-checkout-cone-mode: false
     - run: |
         ls -alh .
       working-directory: envoy
