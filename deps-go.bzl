@@ -2,7 +2,7 @@ load("@bazel_gazelle//:deps.bzl", "go_repository")
 
 def aptly_dependencies():
     go_repository(
-        name = "com_github_aptly_dev_aptly",
+        name = "aptly",
         importpath = "github.com/aptly-dev/aptly",
         sha256 = "07e18ce606feb8c86a1f79f7f5dd724079ac27196faa61a2cefa5b599bbb5bb1",
         strip_prefix = "aptly-1.5.0",
