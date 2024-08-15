@@ -6,9 +6,9 @@ gazelle(name = "gazelle")
 
 genrule(
     name = "go.mod",
-    srcs = ["@com_github_aptly_dev_aptly//:go.mod"],
+    srcs = ["@aptly//:go.mod"],
     outs = ["go.mod.txt"],
-    cmd = "cat $(location @com_github_aptly_dev_aptly//:go.mod) > $@",
+    cmd = "cat $(location @aptly//:go.mod) > $@",
 )
 
 gazelle(
@@ -20,15 +20,4 @@ gazelle(
     ],
     command = "update-repos",
     data = [":go.mod"],
-)
-
-go_library(
-    name = "aptly_lib",
-    srcs = ["@com_github_aptly_dev_aptly//:main.go"],
-    importpath = "github.com/aptly-dev/aptly",
-    visibility = ["//visibility:private"],
-    deps = [
-        "@com_github_aptly_dev_aptly//aptly",
-        "@com_github_aptly_dev_aptly//cmd",
-    ],
 )
