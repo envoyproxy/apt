@@ -30,14 +30,16 @@ jobs:
           VERSION.txt
         sparse-checkout-cone-mode: false
     - run: |
-        ls -alh .
+        VERSION=$(cat VERSION.txt)
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+        DEV_COMMIT_ID=$(git ls-remote https://github.com/envoyproxy/envoy refs/heads/main)
+        echo "commit=${DEV_COMMIT_ID}" >> "$GITHUB_OUTPUT"
+      id: envoy
       working-directory: envoy
     - run: |
-        DEV_COMMIT_ID=$(git ls-remote https://github.com/envoyproxy/envoy refs/heads/main)
-        echo "DEV_COMMIT_ID=${DEV_COMMIT_ID}" >> $GITHUB_ENV
-    - run: |
+        echo "ENVOY: ${{ steps.envoy.outputs.commit }}"
         bazel run --config=ci \
-                  --action_env="DEV_COMMIT_ID=${DEV_COMMIT_ID}" \
-                  --host_action_env="DEV_COMMIT_ID=${DEV_COMMIT_ID}" \
+                  --action_env="DEV_COMMIT_ID=${{ steps.envoy.outputs.commit }}" \
+                  --host_action_env="DEV_COMMIT_ID=${{ steps.envoy.outputs.commit }}" \
                   :verify_debs
       working-directory: apt
