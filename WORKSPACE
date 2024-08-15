@@ -11,9 +11,13 @@ load("//:setup.bzl", "setup")
 setup()
 
 load("//:toolchains.bzl", "toolchains")
-toolchains()
+toolchains(VERSIONS)
 
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+load("//:setup_extra.bzl", "setup_extra")
+setup_extra()
+
+load("//:deps_extra.bzl", "dependencies_extra")
+dependencies_extra()
+
 # gazelle:repo bazel_gazelle
 # gazelle:repository_macro deps-go.bzl%go_dependencies
-gazelle_dependencies(go_repository_default_config = "//:WORKSPACE")

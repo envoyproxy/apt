@@ -1,5 +1,7 @@
 
 VERSIONS = {
+    "jq": "1.7",
+    "yq": "4.24.4",
     "python": "3.12",
     "aspect_bazel_lib": {
         "type": "github_archive",
