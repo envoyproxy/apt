@@ -24,4 +24,4 @@ jobs:
         bazel build --config=ci //:aptly-config
         bazel run --config=ci @aptly config show -- -config "${PWD}/bazel-bin/.aptly" \
           | jq -r '.FileSystemPublishEndpoints.public.rootDir' \
-          | grep /opt/build/repo/repository
+          | grep /opt/build/cache/html

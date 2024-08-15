@@ -1,10 +1,20 @@
 
 common --color=yes
+common --action_env=APT_ROOT=apt
+common --host_action_env=APT_ROOT=apt
+
 common:ci --noshow_progress
 common:ci --noshow_loading_progress
 common:ci --test_output=errors
 common:ci --//:aptly-custom=//:.aptly-ci-override
+common:ci --action_env=APT_ROOT=/opt/build/cache
+common:ci --host_action_env=APT_ROOT=/opt/build/cache
 
 common:debs-ci --config=ci
-common:debs-ci --//debs:excludes=//debs:custom-excludes.txt
+common:debs-ci --//debs:excludes=//debs:excludes.txt
 # common:debs-ci --//debs:token=//debs:token.txt
+
+common:publish-ci --config=debs-ci
+common:publish-ci --//tools/tarball:target=//:html
+common:publish-ci --//tools/tarball:overwrite=//tools/tarball:true
+common:publish-ci --//debs:signing-token=//debs:signing-token.txt

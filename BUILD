@@ -2,10 +2,32 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 load("@aspect_bazel_lib//lib:jq.bzl", "jq")
 load("@aspect_bazel_lib//lib:yq.bzl", "yq")
+load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 
 exports_files([
     "envoy-maintainers-public.key",
 ])
+
+filegroup(
+    name = "true",
+    srcs = [],
+)
+
+filegroup(
+    name = "false",
+    srcs = [],
+)
+
+label_flag(
+    name = "production",
+    build_setting_default = ":false",
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "production_build",
+    flag_values = {":production": ":true"},
+)
 
 # gazelle:prefix github.com/aptly-dev/aptly
 gazelle(name = "gazelle")
@@ -90,4 +112,13 @@ jq(
     filter = """
     .[0] * .[1]
     """,
+)
+
+pkg_tar(
+    name = "html",
+    extension = "tar.gz",
+    deps = [
+        "//debs:html",
+        "//site:html",
+    ],
 )

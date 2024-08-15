@@ -3,9 +3,36 @@ load("@aspect_bazel_lib//lib:jq.bzl", "jq")
 MAINTAINER = "Envoy maintainers <envoy-maintainers@googlegroups.com>"
 
 exports_files([
-    "custom-excludes.txt",
+    "excludes.txt",
     "token.txt",
+    "signing-token.txt",
 ])
+
+genrule(
+    name = "empty",
+    outs = ["empty.txt"],
+    cmd = """
+    touch $@
+    """,
+)
+
+label_flag(
+    name = "excludes",
+    build_setting_default = ":empty",
+    visibility = ["//visibility:public"],
+)
+
+label_flag(
+    name = "token",
+    build_setting_default = ":empty",
+    visibility = ["//visibility:public"],
+)
+
+label_flag(
+    name = "signing-token",
+    build_setting_default = ":empty",
+    visibility = ["//visibility:public"],
+)
 
 jq(
     name = "envoy_versions",
@@ -104,24 +131,6 @@ jq(
 )
 
 genrule(
-    name = "empty",
-    outs = ["empty.txt"],
-    cmd = """
-    touch $@
-    """,
-)
-
-label_flag(
-    name = "excludes",
-    build_setting_default = ":empty",
-)
-
-label_flag(
-    name = "token",
-    build_setting_default = ":empty",
-)
-
-genrule(
     name = "debs",
     outs = ["debs.tar.gz"],
     cmd = """
@@ -141,22 +150,60 @@ genrule(
         ":excludes",
         ":token",
     ],
+    visibility = ["//visibility:public"],
 )
+
+PUBLISH_ENV = {
+    "APTLY_BIN": "$(location @aptly)",
+    "MAINTAINER_KEY": "$(location //:envoy-maintainers-public.key)",
+    "APTLY_CONF": "$(location //:aptly-config)",
+    "DEBS": "$(location :debs)",
+    "DEBS_ROOT": "$${APT_ROOT}/repository",
+    "SIGNING_TOKEN": "$(location :signing-token)",
+}
 
 sh_binary(
     name = "publish",
     srcs = ["publish.sh"],
-    env = {
-        "APTLY_BIN": "$(location @aptly)",
-        "MAINTAINER_KEY": "$(location //:envoy-maintainers-public.key)",
-        "APTLY_CONF": "$(location //:aptly-config)",
-        "DEBS": "$(location :debs)",
-        "DEBS_ROOT_DEFAULT": "/opt/build/cache/repository",
-    },
+    env = PUBLISH_ENV | select({
+        "//:production_build": {"SIGNING_KEY": "Envoy maintainers <envoy-maintainers@googlegroups.com>"},
+        "//conditions:default": {"SIGNING_KEY": "Envoy CI <envoy-ci@for.testing.only>"},
+    }),
     data = [
         "@aptly",
         "//:aptly-config",
         "//:envoy-maintainers-public.key",
-        ":debs"
+        ":debs",
+        ":signing-token",
     ],
+    visibility = ["//visibility:public"],
+)
+
+HTML_BUILD_CMD = """
+    export APTLY_BIN="$(location @aptly)"
+    export MAINTAINER_KEY="$(location //:envoy-maintainers-public.key)"
+    export APTLY_CONF="$(location //:aptly-config)"
+    export DEBS="$(location :debs)"
+    export DEBS_ROOT="$${APT_ROOT}/repository"
+    export SIGNING_TOKEN="$(location :signing-token)"
+    $(location :publish)
+    tar hcf $@ -C $${APT_ROOT}/html .
+"""
+
+genrule(
+    name = "html",
+    outs = ["html.tar.gz"],
+    cmd = select({
+        "//:production_build": "export SIGNING_KEY=\"Envoy maintainers <envoy-maintainers@googlegroups.com>\"",
+        "//conditions:default": "export SIGNING_KEY=\"envoy-ci@for.testing.only\"",
+    }) + HTML_BUILD_CMD,
+    tools = [
+        "@aptly",
+        "//:aptly-config",
+        "//:envoy-maintainers-public.key",
+        ":debs",
+        ":publish",
+        ":signing-token",
+    ],
+    visibility = ["//visibility:public"],
 )
