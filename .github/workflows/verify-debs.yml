@@ -19,11 +19,24 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
+      with:
+        path: apt
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
+      with:
+        repository: envoyproxy/envoy
+        depth: 1
+        path: envoy
+        sparse-checkout: |
+          VERSION.txt
     - run: |
-        DEV_COMMIT_ID=$(git ls-remote https://github.com/envoyproxy/envoy HEAD)
+        ls -alh .
+      working-directory: envoy
+    - run: |
+        DEV_COMMIT_ID=$(git ls-remote https://github.com/envoyproxy/envoy refs/heads/main)
         echo "DEV_COMMIT_ID=${DEV_COMMIT_ID}" >> $GITHUB_ENV
     - run: |
         bazel run --config=ci \
                   --action_env="DEV_COMMIT_ID=${DEV_COMMIT_ID}" \
                   --host_action_env="DEV_COMMIT_ID=${DEV_COMMIT_ID}" \
                   :verify_debs
+      working-directory: apt
