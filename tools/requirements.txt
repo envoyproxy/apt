@@ -220,9 +220,9 @@ cryptography==43.0.0 \
     --hash=sha256:ee0c405832ade84d4de74b9029bedb7b31200600fa524d218fc29bfa371e97f5 \
     --hash=sha256:fdcb265de28585de5b859ae13e3846a8e805268a823a12a4da2597f1f5afc9f0
     # via pyjwt
-envoy-base-utils==0.5.4 \
-    --hash=sha256:90882337c2ce509b19fc21f5d66395dad44a706e4d616baabd1ffaea256ee358 \
-    --hash=sha256:c1167f567994596a3071027d57ca895ac4a8bd8969d4de846b0f2cda499fa5ad
+envoy-base-utils==0.5.5 \
+    --hash=sha256:2341b7618c92969e3ac5fc43dd16fcc39d132981ffff3f0ddbabf08a336a6fa1 \
+    --hash=sha256:a72af1df5680d4fcdeb91f06d19b7495d740f8b9a8a1549c012272e10fdd59ea
     # via -r requirements.in
 frozendict==2.4.4 \
     --hash=sha256:07c3a5dee8bbb84cba770e273cdbf2c87c8e035903af8f781292d72583416801 \
