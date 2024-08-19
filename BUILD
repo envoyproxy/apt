@@ -3,6 +3,10 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 load("@aspect_bazel_lib//lib:jq.bzl", "jq")
 load("@aspect_bazel_lib//lib:yq.bzl", "yq")
 
+exports_files([
+    "envoy-maintainers-public.key",
+])
+
 # gazelle:prefix github.com/aptly-dev/aptly
 gazelle(name = "gazelle")
 
