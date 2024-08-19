@@ -23,3 +23,6 @@ jobs:
     - run: |
         bazel build --config=ci //:envoy_versions
         cat bazel-bin/envoy_versions.json | jq '.'
+
+    - run: |
+        bazel run --config=ci //tools/fetch -- -h
