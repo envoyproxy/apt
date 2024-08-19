@@ -6,6 +6,8 @@ BOLD="\e[1m"
 UNDERLINE="\e[4m"
 NORMAL="\e[0m"
 
+EXCLUDE_FILE=debs/custom-excludes.txt
+DEBS_ROOT=/opt/build/cache/repository
 
 bold () {
     echo -n "${BOLD}${*}${NORMAL}"
@@ -23,5 +25,15 @@ import_public_key () {
     gpg --no-default-keyring --keyring trustedkeys.gpg --import envoy-maintainers-public.key
 }
 
+create_excludes () {
+    # Prevent re-downloading cached files
+    if [[ -e "${DEBS_ROOT}" ]]; then
+        ls "${DEBS_ROOT}" | (grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' || echo '') | sort -u > "$EXCLUDE_FILE"
+    else
+        touch "$EXCLUDE_FILE"
+    fi
+}
+
 import_public_key
-bazel run --config=ci //debs:publish
+create_excludes
+bazel run --config=debs-ci //debs:publish

@@ -4,3 +4,7 @@ common:ci --noshow_progress
 common:ci --noshow_loading_progress
 common:ci --test_output=errors
 common:ci --//:aptly-custom=//:.aptly-ci-override
+
+common:debs-ci --config=ci
+common:debs-ci --//debs:excludes=//debs:custom-excludes.txt
+# common:debs-ci --//debs:token=//debs:token.txt
