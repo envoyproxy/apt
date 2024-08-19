@@ -1,6 +1,7 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 load("@aspect_bazel_lib//lib:jq.bzl", "jq")
+load("@aspect_bazel_lib//lib:yq.bzl", "yq")
 
 # gazelle:prefix github.com/aptly-dev/aptly
 gazelle(name = "gazelle")
@@ -44,4 +45,45 @@ jq(
     }
     """,
     visibility = ["//visibility:public"],
+)
+
+yq(
+    name = ".aptly-base",
+    args = ["-P"],
+    outs = [".aptly-base.json"],
+    srcs = [".aptly.yaml"],
+    visibility = ["//visibility:public"],
+)
+
+yq(
+    name = ".aptly-ci-override",
+    args = ["-P"],
+    outs = [".aptly-ci-override.json"],
+    srcs = [".aptly-ci.yaml"],
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "aptly-empty",
+    outs = ["aptly-empty.json"],
+    cmd = "echo {} > $@",
+)
+
+label_flag(
+    name = "aptly-custom",
+    build_setting_default = ":aptly-empty",
+)
+
+jq(
+    name = "aptly-config",
+    args = ["-s"],
+    out = ".aptly",
+    srcs = [
+        ".aptly-base.json",
+        ":aptly-custom",
+    ],
+    visibility = ["//visibility:public"],
+    filter = """
+    .[0] * .[1]
+    """,
 )

@@ -21,4 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
     - run: |
-        bazel run --config=ci @aptly publish list
+        bazel build --config=ci //:aptly-config
+        bazel run --config=ci @aptly config show -- -config "${PWD}/bazel-bin/.aptly" \
+          | jq -r '.FileSystemPublishEndpoints.public.rootDir' \
+          | grep /opt/build/repo/repository

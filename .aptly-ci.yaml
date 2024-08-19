@@ -1,0 +1,5 @@
+rootDir: /opt/build/cache/aptly
+FileSystemPublishEndpoints:
+  public:
+    rootDir: /opt/build/repo/repository
+    linkMethod: symlink
