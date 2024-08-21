@@ -1,5 +1,5 @@
 [build]
-publish = "repository"
+publish = "html"
 command = "./build-repository.sh"
 
 [build.environment]

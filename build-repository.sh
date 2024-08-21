@@ -6,8 +6,17 @@ BOLD="\e[1m"
 UNDERLINE="\e[4m"
 NORMAL="\e[0m"
 
-EXCLUDE_FILE=debs/custom-excludes.txt
+EXCLUDE_FILE=debs/excludes.txt
 DEBS_ROOT=/opt/build/cache/repository
+SIGNING_KEY_PASSPHRASE="${SIGNING_KEY_PASSPHRASE:-Hackme}"
+
+
+finally () {
+    rm -rf signing.key
+    rm -rf debs/signing-token.txt
+}
+
+trap finally EXIT
 
 bold () {
     echo -n "${BOLD}${*}${NORMAL}"
@@ -34,6 +43,68 @@ create_excludes () {
     fi
 }
 
-import_public_key
-create_excludes
-bazel run --config=debs-ci //debs:publish
+generate_private_key () {
+    echo -e "$(underline $(bold "Generate snakeoil private key: repository signing"))"
+    gpg --batch --pinentry-mode loopback --passphrase "" --gen-key <<EOF
+%echo Generating a basic OpenPGP key
+Key-Type: 1
+Key-Length: 4096
+Subkey-Type: 1
+Subkey-Length: 4096
+Name-Real: Envoy CI
+Name-Email: envoy-ci@for.testing.only
+Expire-Date: 0
+Passphrase: ${SIGNING_KEY_PASSPHRASE}
+%commit
+%echo done
+EOF
+    gpg --export -a "Envoy CI" > site/signing.key
+}
+
+import_private_key () {
+    echo -e "$(underline $(bold "Import maintainers private signing key: repository signing"))"
+    echo "${SIGNING_KEY_0}${SIGNING_KEY_1}${SIGNING_KEY_2}${SIGNING_KEY_3}" | base64 -d > signing.key
+    gpg --batch --pinentry-mode loopback --import signing.key
+}
+
+create_excludes () {
+    if [[ -e "${DEBS_ROOT}" ]]; then
+        ls "${DEBS_ROOT}" \
+            | (grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' || echo '') \
+            | sort -u > "$EXCLUDE_FILE"
+    else
+        touch "$EXCLUDE_FILE"
+    fi
+}
+
+configure_gpg () {
+    import_public_key
+    echo "${SIGNING_KEY_PASSPHRASE}" > debs/signing-token.txt
+    if [[ "$CONTEXT" == "deploy-preview" ]]; then
+        generate_private_key
+    else
+        import_private_key
+    fi
+}
+
+main () {
+    local bazel_args=(--config=publish-ci)
+    create_excludes
+    configure_gpg
+    if [[ "$CONTEXT" == "deploy-preview" ]]; then
+        echo "$DEPLOY_PRIME_URL" > site/url.txt
+        bazel_args+=(
+            --//site:url=//site:url.txt
+            --//site:signing-key=//site:signing.key)
+    else
+        bazel_args+=(--//:production=//:true)
+    fi
+    bazel run \
+          "${bazel_args[@]}" \
+          //tools/tarball:unpack \
+          /opt/build/repo/html
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main
+fi
