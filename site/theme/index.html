@@ -11,14 +11,15 @@
       <li>Ubuntu focal</li>
       <li>Ubuntu jammy</li>
       <li>Debian bullseye</li>
-      <li>Ubuntu bookworm</li>
+      <li>Debian bookworm</li>
     </ul>
 
     If you are using a different deb-based distribution you may be able to use one of these.
   </p>
 
+  <h2>Install Envoy</h2>
   <div  style="background: #eee; border: solid 1px #ccc;">
-    <code style="white-space: pre; word-wrap: break; color: #999;">
+    <code style="white-space: pre; word-wrap: break; color: #555;">
       $ wget https://apt.envoyproxy.io/signing.key  | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
       $ echo "deb[signed-by=/etc/apt/keyrings/envoy-keyring.gpg] https://apt.envoyproxy.io/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/envoy.list
       $ sudo apt-get update
