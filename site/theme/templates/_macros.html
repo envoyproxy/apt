@@ -1,0 +1,49 @@
+{% macro directory_listing(site_url, cwd, directory) %}
+
+<div>
+<h2>Browse the <a href="{{ site_url }}">apt repository</a></h2>
+
+<div>
+  <table class="table table-striped table-hover table-sm table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th scope="col" colspan="2">/{{ cwd }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if cwd %}
+      <tr>
+        <td class="text-center" style="width: 1%; white-space: nowrap;">
+          <i class="fas fa-folder"></i>
+        </td>
+        <td>
+          <a href="..">..</a>
+        </td>
+      </tr>
+      {% endif %}
+      {% for path in directory.dirs %}
+      <tr>
+        <td class="text-center" style="width: 1%; white-space: nowrap;">
+          <i class="fas fa-folder"></i>
+        </td>
+        <td>
+          <a href="{{ path }}">{{ path }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+      {% for path, data in directory.files.items() %}
+      <tr>
+        <td class="text-center" style="width: 1%; white-space: nowrap;">
+          <i class="fas {{ data.class }}"></i>
+        </td>
+        <td>
+          <a href="{{ path }}">{{ path }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+  </table>
+</div>
+</div>
+
+{% endmacro %}

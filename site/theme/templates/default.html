@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block css %}
+
+{{ super() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+.fa, .fab, .fad, .fal, .far, .fas {
+  color: #6d8e4c
+}
+
+.debian-icon {
+    height: 1em;
+    width: 1em;
+    background-image: url('/theme/images/debian.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0 .3em 0 0;
+    vertical-align: middle;
+}
+
+.ubuntu-icon {
+    height: 1em;
+    width: 1em;
+    background-image: url('/theme/images/ubuntu.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0 .3em 0 0;
+    vertical-align: middle;
+}
+
+</style>
+{% endblock css %}
+
+{% block js_post %}
+<script src="{{SITEURL}}/theme/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-bash.min.js"></script>
+
+<script>hljs.highlightAll();</script>
+
+{% endblock js_post %}

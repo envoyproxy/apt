@@ -35,8 +35,9 @@ filegroup(
 
 static_website(
     name = "html",
-    content = "@envoy-website//site/content",
+    content = "//site/content",
     data = "//site/data",
     theme = "//site/theme",
+    url = ":url",
     visibility = ["//visibility:public"],
 )

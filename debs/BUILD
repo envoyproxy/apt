@@ -180,14 +180,14 @@ sh_binary(
 )
 
 HTML_BUILD_CMD = """
-    export APTLY_BIN="$(location @aptly)"
-    export MAINTAINER_KEY="$(location //:envoy-maintainers-public.key)"
-    export APTLY_CONF="$(location //:aptly-config)"
-    export DEBS="$(location :debs)"
-    export DEBS_ROOT="$${APT_ROOT}/repository"
-    export SIGNING_TOKEN="$(location :signing-token)"
-    $(location :publish)
-    tar hcf $@ -C $${APT_ROOT}/html .
+export APTLY_BIN="$(location @aptly)"
+export MAINTAINER_KEY="$(location //:envoy-maintainers-public.key)"
+export APTLY_CONF="$(location //:aptly-config)"
+export DEBS="$(location :debs)"
+export DEBS_ROOT="$${APT_ROOT}/repository"
+export SIGNING_TOKEN="$(location :signing-token)"
+$(location :publish)
+tar hcf $@ -C $${APT_ROOT}/html .
 """
 
 genrule(
@@ -205,5 +205,13 @@ genrule(
         ":publish",
         ":signing-token",
     ],
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "file_list",
+    srcs = [":html.tar.gz"],
+    outs = ["file_list.txt"],
+    cmd = "tar -tf $(location :html.tar.gz) | grep -v '/$$' > $@",
     visibility = ["//visibility:public"],
 )
