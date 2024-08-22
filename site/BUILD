@@ -1,3 +1,4 @@
+load("@envoy_toolshed//website:macros.bzl", "static_website")
 
 ENVOY_APT_URL = "https://apt.envoyproxy.io"
 
@@ -26,21 +27,16 @@ label_flag(
     visibility = ["//visibility:public"],
 )
 
-genrule(
+filegroup(
+    name = "config",
+    srcs = ["pelicanconf.py"],
+    visibility = ["//visibility:public"],
+)
+
+static_website(
     name = "html",
-    outs = ["site.tar.gz"],
-    cmd = """
-    TMPDIR=$$(mktemp -d)
-    URL_HOST="$$(cat $(location :url))"
-    KEY_URL="$${URL_HOST}/signing.key"
-    cat $(location :signing-key) > "$${TMPDIR}/signing.key"
-    echo "<h1>COMING SOON: $${URL_HOST}</h1>" > "$${TMPDIR}/index.html"
-    echo "<div>Signing key: <a href=\"$${KEY_URL}\">$${KEY_URL}</div>" >> "$${TMPDIR}/index.html"
-    tar cf $@ -C "$${TMPDIR}" .
-    """,
-    tools = [
-        ":signing-key",
-        ":url",
-    ],
+    content = "@envoy-website//site/content",
+    data = "//site/data",
+    theme = "//site/theme",
     visibility = ["//visibility:public"],
 )

@@ -21,6 +21,15 @@ VERSIONS = {
             "https://github.com/{repo}/releases/download/v{version}/bazel-gazelle-v{version}.tar.gz",
         ],
     },
+    "com_github_twbs_bootstrap": {
+        "type": "github_archive",
+        "repo": "twbs/bootstrap",
+        "version": "5.1.3",
+        "sha256": "55b951db46e1d69b4236494122fe559716a76c4b8a418c11f3fed6abc2d4de3f",
+        "urls": ["https://github.com/{repo}/archive/refs/tags/v{version}.tar.gz"],
+        "strip_prefix": "bootstrap-{version}",
+        "build_file": "@envoy-website//bazel:bootstrap.BUILD",
+    },
     "com_google_absl": {
         "type": "github_archive",
         "repo": "abseil/abseil-cpp",
@@ -48,10 +57,18 @@ VERSIONS = {
     "envoy_toolshed": {
         "type": "github_archive",
         "repo": "envoyproxy/toolshed",
-        "version": "0.1.5",
-        "sha256": "83e697cfc970af4e8a5a67a11020268d7047e5087b541f5d0d2f499ab20ae3f9",
+        "version": "0.1.6",
+        "sha256": "30adbf9409a4adc78eb602a746e7cd4e9f75fc8d99d4c8174aaf1846bed0d15d",
         "urls": ["https://github.com/{repo}/archive/bazel-v{version}.tar.gz"],
         "strip_prefix": "toolshed-bazel-v{version}/bazel",
+    },
+    "envoy-website": {
+        "type": "github_archive",
+        "repo": "envoyproxy/envoy-website",
+        "version": "e79ef05416554ab494d7427fbe5ceff78da4ea3e",
+        "sha256": "5bd82c1c7bdd4e8bc063a9067bfef24e4aeba9716c1cc7a965ae4100cfcf80ea",
+        "urls": ["https://github.com/{repo}/archive/{version}.tar.gz"],
+        "strip_prefix": "envoy-website-{version}",
     },
     "io_bazel_rules_go": {
         "type": "github_archive",

@@ -1,0 +1,31 @@
+{% extends "content.html" %}
+
+{% block page_content %}
+
+<div style="padding: 1em;">
+  <h1>Install Envoy with apt</h1>
+
+  <p>
+    The following distributions are currently supported:
+    <ul>
+      <li>Ubuntu focal</li>
+      <li>Ubuntu jammy</li>
+      <li>Debian bullseye</li>
+      <li>Ubuntu bookworm</li>
+    </ul>
+
+    If you are using a different deb-based distribution you may be able to use one of these.
+  </p>
+
+  <div  style="background: #eee; border: solid 1px #ccc;">
+    <code style="white-space: pre; word-wrap: break; color: #999;">
+      $ wget https://apt.envoyproxy.io/signing.key  | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
+      $ echo "deb[signed-by=/etc/apt/keyrings/envoy-keyring.gpg] https://apt.envoyproxy.io/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/envoy.list
+      $ sudo apt-get update
+      $ sudo apt-get install envoy
+      $ envoy --version
+    </code>
+  </div>
+</div>
+
+{% endblock page_content %}
