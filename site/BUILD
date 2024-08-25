@@ -3,7 +3,7 @@ load("@envoy_toolshed//website:macros.bzl", "static_website")
 ENVOY_APT_URL = "https://apt.envoyproxy.io"
 
 exports_files([
-    "signing.key",
+    "signing.key.txt",
     "url.txt",
 ])
 
@@ -13,6 +13,16 @@ genrule(
     cmd = """
     echo %s > $@
     """ % ENVOY_APT_URL,
+)
+
+genrule(
+    name = "signing_key",
+    outs = ["signing.key"],
+    cmd = """
+    cat $(location :signing-key) > $@
+    """,
+    srcs = [":signing-key"],
+    visibility = ["//visibility:public"],
 )
 
 label_flag(

@@ -58,13 +58,14 @@ Passphrase: ${SIGNING_KEY_PASSPHRASE}
 %commit
 %echo done
 EOF
-    gpg --export -a "Envoy CI" > site/signing.key
+    gpg --export -a "Envoy CI" > site/signing.key.txt
 }
 
 import_private_key () {
     echo -e "$(underline $(bold "Import maintainers private signing key: repository signing"))"
-    echo "${SIGNING_KEY_0}${SIGNING_KEY_1}${SIGNING_KEY_2}${SIGNING_KEY_3}" | base64 -d > signing.key
-    gpg --batch --pinentry-mode loopback --import signing.key
+    echo "${SIGNING_KEY_0}${SIGNING_KEY_1}${SIGNING_KEY_2}${SIGNING_KEY_3}" \
+        | base64 -d \
+        | gpg --batch --pinentry-mode loopback --import
 }
 
 create_excludes () {
@@ -95,7 +96,7 @@ main () {
         echo "$DEPLOY_PRIME_URL" > site/url.txt
         bazel_args+=(
             --//site:url=//site:url.txt
-            --//site:signing-key=//site:signing.key)
+            --//site:signing-key=//site:signing.key.txt)
     else
         bazel_args+=(--//:production=//:true)
     fi
