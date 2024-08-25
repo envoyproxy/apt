@@ -121,4 +121,5 @@ pkg_tar(
         "//debs:html",
         "//site:html",
     ],
+    srcs = ["//site:signing-key"],
 )
