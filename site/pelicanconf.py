@@ -110,10 +110,10 @@ class FileTree(object):
     def as_dict(self):
         directory_structure = dict(dirs={}, files={})
 
-        for dir_path in self.directories:
+        for dir_path in sorted(self.directories):
             self._add_directory_to_structure(directory_structure["dirs"], dir_path)
 
-        for file_path in self.files:
+        for file_path in sorted(self.files):
             self._add_file_to_structure(directory_structure, file_path)
 
         return directory_structure
