@@ -2,31 +2,52 @@
 
 {% block page_content %}
 
-<div style="padding: 1em;">
+<div class="px-3">
   <h1>Install Envoy with apt</h1>
 
-  <p>
-    The following distributions are currently supported:
-    <ul>
-      <li>Ubuntu focal</li>
-      <li>Ubuntu jammy</li>
-      <li>Debian bullseye</li>
-      <li>Debian bookworm</li>
-    </ul>
+  <nav class="nav nav-tabs p-0" id="nav-tab" role="tablist">
+    {%  for version, distro in DISTROS.items() %}
+    <button
+      class="nav-link{% if loop.first %} active{% endif %}"
+      id="{{ version }}-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#nav-{{ version }}"
+      type="button"
+      role="tab"
+      aria-controls="nav-{{ version }}"
+      aria-selected="{% if loop.first %}true{% else %}false{% endif %}">
+      <i class="fab {{ distro }}-icon"></i>{{ version }}
+    </button>
+    {% endfor %}
+  </nav>
 
-    If you are using a different deb-based distribution you may be able to use one of these.
+  <div class="tab-content p-0 m-0" id="installs">
+    {%  for version, distro in DISTROS.items() %}
+    <div
+      class="tab-pane fade{% if loop.first %} show active{% endif %} p-1"
+      id="nav-{{ version }}"
+      role="tabpanel"
+      aria-labelledby="{{ version }}-tab">
+      <pre><code class="language-bash">
+$ wget {{ SITEURL }}/signing.key  | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
+$ echo "deb[signed-by=/etc/apt/keyrings/envoy-keyring.gpg] {{ SITEURL }} {{ version }} main" | sudo tee /etc/apt/sources.list.d/envoy.list
+$ sudo apt-get update
+$ sudo apt-get install envoy
+$ envoy --version
+      </code></pre>
+    </div>
+    {% endfor %}
+  </div>
+
+  <p>
+    If you are using a different deb-based distribution you may be able to use one of the above distros.
   </p>
 
-  <h2>Install Envoy</h2>
-  <div  style="background: #eee; border: solid 1px #ccc;">
-    <code style="white-space: pre; word-wrap: break; color: #555;">
-      $ wget https://apt.envoyproxy.io/signing.key  | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
-      $ echo "deb[signed-by=/etc/apt/keyrings/envoy-keyring.gpg] https://apt.envoyproxy.io/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/envoy.list
-      $ sudo apt-get update
-      $ sudo apt-get install envoy
-      $ envoy --version
-    </code>
-  </div>
 </div>
 
-{% endblock page_content %}
+<div class="px-3">
+  {% import '_macros.html' as macros %}
+  {{ macros.directory_listing(SITEURL, "", DIRECTORY_STRUCTURE) }}
+
+  {% endblock page_content %}
+</div>

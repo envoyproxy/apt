@@ -1,0 +1,10 @@
+{% extends "content.html" %}
+
+{% block page_content %}
+
+<div class="px-3">
+  {% import '_macros.html' as macros %}
+  {{ macros.directory_listing(SITEURL, cwd, listdir) }}
+
+  {% endblock page_content %}
+</div>
