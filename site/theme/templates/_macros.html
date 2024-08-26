@@ -34,7 +34,7 @@
       {% for path, data in directory.files.items() %}
       <tr>
         <td class="text-center" style="width: 1%; white-space: nowrap;">
-          <i class="fas {{ data.class }}"></i>
+          <i class="{{ data.class }}"></i>
         </td>
         <td>
           <a href="{{ path }}">{{ path }}</a>
