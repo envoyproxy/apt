@@ -64,25 +64,25 @@ DEFAULT_PAGINATION = False
 INDEX_SAVE_AS = 'index.html'
 
 MIME_TO_ICON = {
-    'application/pdf': 'fa-file-pdf',
-    'application/msword': 'fa-file-word',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'fa-file-word',
-    'application/vnd.ms-excel': 'fa-file-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'fa-file-excel',
-    'image/jpeg': 'fa-file-image',
-    'image/png': 'fa-file-image',
-    'video/mp4': 'fa-file-video',
-    'video/x-msvideo': 'fa-file-video',
-    'audio/mpeg': 'fa-file-audio',
-    'audio/wav': 'fa-file-audio',
-    'application/zip': 'fa-file-archive',
-    'application/x-tar': 'fa-file-archive',
-    'text/plain': 'fa-file-alt',
-    'application/octet-stream': 'fa-file',
+    'application/pdf': 'fas fa-file-pdf',
+    'application/msword': 'fas fa-file-word',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'fas fa-file-word',
+    'application/vnd.ms-excel': 'fas fa-file-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'fas fa-file-excel',
+    'image/jpeg': 'fas fa-file-image',
+    'image/png': 'fas fa-file-image',
+    'video/mp4': 'fas fa-file-video',
+    'video/x-msvideo': 'fas fa-file-video',
+    'audio/mpeg': 'fas fa-file-audio',
+    'audio/wav': 'fas fa-file-audio',
+    'application/zip': 'fas fa-file-archive',
+    'application/x-tar': 'fas fa-file-archive',
+    'text/plain': 'fas fa-file-alt',
+    'application/octet-stream': 'fas fa-file',
     "application/vnd.debian.binary-package": "debian-icon",
     "application/x-debian-package": "debian-icon",
-    "application/pgp-keys": "fa-key",
-    "application/pgp-signature": "fa-file-signature"}
+    "application/pgp-keys": "fa fa-key",
+    "application/pgp-signature": "fas fa-file-signature"}
 
 mimetypes.add_type('application/pgp-keys', '.key')
 mimetypes.add_type('application/pgp-signature', '.gpg')
@@ -132,7 +132,7 @@ class FileTree(object):
         current = directory_structure
 
         if len(components) == 1:
-            directory_structure["files"][path] = {}
+            directory_structure["files"][path] = {"class": self.class_for_file(components[0])}
             return
 
         for part in components[:-1]:
@@ -141,10 +141,11 @@ class FileTree(object):
         current["files"][components[-1]] = {"class": self.class_for_file(components[-1])}
 
     def class_for_file(self, filename):
-        mime_type, encoding = mimetypes.guess_type(filename)
-        if encoding in ["gzip", "bz2"]:
-            return "fa-compress"
-        return self.mime_to_icon.get(mime_type) or self.mime_to_icon.get("application/octet-stream")
+        mimetype, encoding = mimetypes.guess_type(filename)
+
+        if not mimetype and encoding in ["gzip", "bzip2"]:
+            return "fas fa-compress"
+        return self.mime_to_icon.get(mimetype) or self.mime_to_icon.get("application/octet-stream")
 
 
 class Indexer(object):
@@ -163,6 +164,7 @@ class Indexer(object):
 
 
 files = ["signing.key"] + pathlib.Path("data/file_list.txt").read_text().splitlines()
+
 DIRECTORY_STRUCTURE = FileTree(files).as_dict
 
 
