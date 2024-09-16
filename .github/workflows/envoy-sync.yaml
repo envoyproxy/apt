@@ -34,10 +34,10 @@ jobs:
       with:
         ref: main
         token: ${{ steps.appauth.outputs.token  }}
-        path: envoy-website
+        path: archive
 
     - run: |
-        envoy_version="$(awk '/"envoy"/ { in_block=1 } in_block && /"version"/ { gsub(/[",]/, "", $2); print $2; in_block=0 }' envoy-website/versions.bzl)"
+        envoy_version="$(awk '/"envoy"/ { in_block=1 } in_block && /"version"/ { gsub(/[",]/, "", $2); print $2; in_block=0 }' archive/versions.bzl)"
         echo "envoy_version=${envoy_version}" >> "$GITHUB_OUTPUT"
       id: current
       name: Get current Envoy version
@@ -73,7 +73,7 @@ jobs:
 
     - run: ./sync_envoy.sh
       if: ${{ steps.state.outputs.should_update == 'true' }}
-      working-directory: envoy-website
+      working-directory: archive
       env:
         ENVOY_SRC_DIR: ../envoy
         COMMITTER_NAME: "update-envoy[bot]"
