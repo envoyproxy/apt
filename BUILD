@@ -3,6 +3,27 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 load("@aspect_bazel_lib//lib:jq.bzl", "jq")
 load("@aspect_bazel_lib//lib:yq.bzl", "yq")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
+load("@envoy_toolshed//:macros.bzl", "json_data")
+load("//:versions.bzl", "VERSIONS")
+
+exports_files([
+    "versions.bzl",
+])
+
+json_data(
+    name = "deps",
+    data = VERSIONS,
+)
+
+jq(
+    name = "dependency_versions",
+    srcs = [":deps"],
+    out = "dependency_shas.json",
+    filter = """
+    with_entries(select(.value | objects and .type == "github_archive") | .value |= {repo, sha256, urls, version})
+    """,
+    visibility = ["//visibility:public"],
+)
 
 exports_files([
     "envoy-maintainers-public.key",
