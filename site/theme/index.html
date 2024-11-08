@@ -29,8 +29,8 @@
       role="tabpanel"
       aria-labelledby="{{ version }}-tab">
       <pre><code class="language-bash">
-$ wget {{ SITEURL }}/signing.key  | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
-$ echo "deb[signed-by=/etc/apt/keyrings/envoy-keyring.gpg] {{ SITEURL }} {{ version }} main" | sudo tee /etc/apt/sources.list.d/envoy.list
+$ wget -O- {{ SITEURL }}/signing.key | sudo gpg --dearmor -o /etc/apt/keyrings/envoy-keyring.gpg
+$ echo "deb [arch=$(dpkg --print-architecture), signed-by=/etc/apt/keyrings/envoy-keyring.gpg] {{ SITEURL }} {{ version }} main" | sudo tee /etc/apt/sources.list.d/envoy.list
 $ sudo apt-get update
 $ sudo apt-get install envoy
 $ envoy --version
