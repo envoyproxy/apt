@@ -1,10 +1,8 @@
-load("@envoy_apt_pip3//:requirements.bzl", "requirement", base_entry_point = "entry_point")
-load("@envoy_toolshed//py:macros.bzl", "entry_point")
+load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
 
-entry_point(
+py_console_script_binary(
     name = "fetch",
-    pkg = "envoy.base.utils",
+    pkg = "@envoy_apt_pip3//envoy_base_utils",
     script = "envoy.fetch",
-    entry_point_alias = base_entry_point,
     visibility = ["//visibility:public"],
 )
