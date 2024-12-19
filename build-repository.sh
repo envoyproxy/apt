@@ -95,6 +95,7 @@ main () {
     if [[ "$CONTEXT" == "deploy-preview" ]]; then
         echo "$DEPLOY_PRIME_URL" > site/url.txt
         bazel_args+=(
+            -s
             --//site:url=//site:url.txt
             --//site:signing-key=//site:signing.key.txt)
     else
