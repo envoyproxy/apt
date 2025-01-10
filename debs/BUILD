@@ -172,6 +172,7 @@ export APTLY_CONF="$(location //:aptly-config)"
 export DEBS="$(location :debs)"
 export DEBS_ROOT="$${APT_ROOT}/repository"
 export SIGNING_TOKEN="$(location :signing-token)"
+ls -alh /opt/build
 $(location :publish)
 tar hcf $@ -C $${APT_ROOT}/html .
 """

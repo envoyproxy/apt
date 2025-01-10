@@ -7,7 +7,8 @@ UNDERLINE="\e[4m"
 NORMAL="\e[0m"
 
 EXCLUDE_FILE=debs/excludes.txt
-DEBS_ROOT=/opt/build/cache/repository
+DEBS_ROOT="${DEBS_ROOT:-/opt/build/cache/repository}"
+OUTPUT_DIR="${OUTPUT_DIR:-/opt/build/repo/html}"
 SIGNING_KEY_PASSPHRASE="${SIGNING_KEY_PASSPHRASE:-Hackme}"
 
 
@@ -103,8 +104,9 @@ main () {
     fi
     bazel run \
           "${bazel_args[@]}" \
+          --config=debug-bazel \
           //tools/tarball:unpack \
-          /opt/build/repo/html
+          $OUTPUT_DIR
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
