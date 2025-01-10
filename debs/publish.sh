@@ -40,7 +40,9 @@ create_dirs () {
 }
 
 unpack_debs () {
-    if [[ -s "$DEBS" ]]; then
+    if [[ -d "$DEBS" ]]; then
+        return 0
+    elif [[ -s "$DEBS" ]]; then
         tar xf "$DEBS" -C "$DEBS_ROOT"
     fi
 }

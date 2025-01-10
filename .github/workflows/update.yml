@@ -1,0 +1,44 @@
+name: Update
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: >-
+    ${{ github.event.inputs.head_ref || github.run_id }}
+
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    if: github.repository_owner == 'envoyproxy'
+    steps:
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
+
+    - run: |
+        mkdir ./debs/import
+        gsutil -mq rsync gs://envoy-apt-cache/debs ./debs/import/
+        ls -alh debs/import/
+
+    - run: |
+        . ./build-repository.sh
+        import_public_key
+        touch debs/excludes.txt
+        echo ${{ github.token }} > debs/token.txt
+        GNUPG_HOME="$(realpath ~/.gnupg)"
+        time bazel build "--sandbox_writable_path=${GNUPG_HOME}" --config=debs-ci //debs
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - uses: envoyproxy/toolshed/gh-actions/gcp/setup@actions-v0.3.14
+      name: Setup GCP (cache)
+      if: ${{ github.event_name != 'pull_request' }}
+      with:
+        key: ${{ secrets.GCS_CACHE_KEY }}
+    - run: |
+        gsutil -mq rsync bazel-bin/debs/debs gs://envoy-apt-cache/debs
+      if: ${{ github.event_name != 'pull_request' }}

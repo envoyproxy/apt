@@ -27,6 +27,7 @@ underline () {
 }
 
 import_public_key () {
+    gpg --list-keys > /dev/null 2>&1
     touch ~/.gnupg/trustedkeys.gpg
     echo -e "$(underline $(bold "Import maintainers public key: checksum verification"))"
     gpg --import envoy-maintainers-public.key

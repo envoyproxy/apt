@@ -1,4 +1,5 @@
 load("@aspect_bazel_lib//lib:jq.bzl", "jq")
+load(":debs.bzl", "fetch_debs")
 
 MAINTAINER = "Envoy maintainers <envoy-maintainers@googlegroups.com>"
 
@@ -98,12 +99,13 @@ genrule(
     name = "published_checksums",
     outs = ["published_checksums.txt"],
     cmd = """
-    $(location //tools/fetch) $(location :deb_checksum_downloads) --output=json > $@
+    $(location //tools/fetch) $(location :deb_checksum_downloads) --token-path=$(location :token) --output=json > $@
     """,
-    tools = [
-        "//tools/fetch",
+    srcs = [
         ":deb_checksum_downloads",
+        ":token",
     ],
+    tools = ["//tools/fetch"],
 )
 
 jq(
@@ -130,27 +132,11 @@ jq(
     visibility = ["//visibility:public"],
 )
 
-genrule(
+fetch_debs(
     name = "debs",
-    outs = ["debs.tar.gz"],
-    cmd = """
-    $(location //tools/fetch) $(location :debs_downloads) \
-        --concurrency 4 \
-        --excludes=$(location :excludes) \
-        --token-path=$(location :token) \
-        --extract-downloads \
-        --output-path=$@
-    if [[ ! -e $@ ]]; then
-        touch $@
-    fi
-    """,
-    tools = [
-        "//tools/fetch",
-        ":debs_downloads",
-        ":excludes",
-        ":token",
-    ],
-    visibility = ["//visibility:public"],
+    downloads = ":debs_downloads",
+    token = ":token",
+    excludes = ":excludes",
 )
 
 PUBLISH_ENV = {
@@ -205,6 +191,7 @@ genrule(
         ":publish",
         ":signing-token",
     ],
+    tags = ["no-remote"],
     visibility = ["//visibility:public"],
 )
 
