@@ -7,7 +7,7 @@ exports_files([
     "excludes.txt",
     "token.txt",
     "signing-token.txt",
-] + glob(["imports/v*/*"]))
+] + glob(["import/v*/*"]))
 
 genrule(
     name = "empty",
