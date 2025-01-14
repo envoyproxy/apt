@@ -19,8 +19,9 @@ fi
 
 if [[ -n "$DEBS" ]]; then
     DEBS="$(dirname $(dirname $(echo ${DEBS} | cut -d' ' -f1)))"
+    echo "DEBS: $DEBS"
+    ls -alh $DEBS
 fi
-
 
 _aptly () {
     "${APTLY[@]}" -- "${@}"
