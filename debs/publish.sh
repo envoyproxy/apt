@@ -17,6 +17,10 @@ if [[ -z "$SIGNING_KEY" ]]; then
     exit 1
 fi
 
+if [[ -n "$DEBS" ]]; then
+    DEBS="$(dirname $(dirname $(echo ${DEBS} | cut -d' ' -f1)))"
+fi
+
 
 _aptly () {
     "${APTLY[@]}" -- "${@}"

@@ -148,7 +148,7 @@ PUBLISH_ENV = {
     "APTLY_BIN": "$(location @aptly)",
     "MAINTAINER_KEY": "$(location //:envoy-maintainers-public.key)",
     "APTLY_CONF": "$(location //:aptly-config)",
-    "DEBS": "$(location :debs-publish)",
+    "DEBS": "$(locations :debs-publish)",
     "DEBS_ROOT": "$${APT_ROOT}/repository",
     "SIGNING_TOKEN": "$(location :signing-token)",
 }
@@ -180,8 +180,7 @@ HTML_BUILD_CMD = """
 export APTLY_BIN="$(location @aptly)"
 export MAINTAINER_KEY="$(location //:envoy-maintainers-public.key)"
 export APTLY_CONF="$(location //:aptly-config)"
-DEBS="$(dirname $(dirname $(echo $(locations :debs-publish) | cut -d' ' -f1)))"
-export DEBS
+export DEBS="$(locations :debs-publish)"
 export DEBS_ROOT="$${APT_ROOT}/repository"
 export SIGNING_TOKEN="$(location :signing-token)"
 ls -alh /opt/build
