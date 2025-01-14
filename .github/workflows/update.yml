@@ -40,5 +40,6 @@ jobs:
       with:
         key: ${{ secrets.GCS_CACHE_KEY }}
     - run: |
-        gsutil -mq rsync bazel-bin/debs/debs gs://envoy-apt-cache/debs
+        du -ch ./bazel-bin/debs/debs/
+        gsutil -mq rsync ./bazel-bin/debs/debs/ gs://envoy-apt-cache/debs
       if: ${{ github.event_name != 'pull_request' }}
