@@ -9,11 +9,6 @@ exports_files([
     "signing-token.txt",
 ])
 
-filegroup(
-    name = "import",
-    srcs = glob(["import/v*/*"]),
-)
-
 genrule(
     name = "empty",
     outs = ["empty.txt"],
@@ -144,6 +139,11 @@ fetch_debs(
     excludes = ":excludes",
 )
 
+filegroup(
+    name = "import",
+    srcs = glob(["import/v*/*"]),
+)
+
 PUBLISH_ENV = {
     "APTLY_BIN": "$(location @aptly)",
     "MAINTAINER_KEY": "$(location //:envoy-maintainers-public.key)",
@@ -180,7 +180,8 @@ HTML_BUILD_CMD = """
 export APTLY_BIN="$(location @aptly)"
 export MAINTAINER_KEY="$(location //:envoy-maintainers-public.key)"
 export APTLY_CONF="$(location //:aptly-config)"
-export DEBS="$(location :debs-publish)"
+DEBS="$(dirname $(dirname $(echo $(locations :debs-publish) | cut -d' ' -f1)))"
+export DEBS
 export DEBS_ROOT="$${APT_ROOT}/repository"
 export SIGNING_TOKEN="$(location :signing-token)"
 ls -alh /opt/build
