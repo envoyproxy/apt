@@ -19,8 +19,6 @@ fi
 
 if [[ -n "$DEBS" ]]; then
     DEBS="$(dirname $(dirname $(echo ${DEBS} | cut -d' ' -f1)))"
-    echo "DEBS: $DEBS"
-    ls -alh $DEBS
 fi
 
 _aptly () {
@@ -46,6 +44,7 @@ create_dirs () {
 
 unpack_debs () {
     if [[ -d "$DEBS" ]]; then
+        DEBS_ROOT=$DEBS
         return 0
     elif [[ -s "$DEBS" ]]; then
         tar xf "$DEBS" -C "$DEBS_ROOT"
