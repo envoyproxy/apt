@@ -106,6 +106,7 @@ main () {
           "${bazel_args[@]}" \
           --config=debug-bazel \
           --config=debs-publish \
+          --sandbox_writable_path=/opt/build \
           //tools/tarball:unpack \
           $OUTPUT_DIR
 }
