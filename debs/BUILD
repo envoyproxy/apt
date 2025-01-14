@@ -7,7 +7,12 @@ exports_files([
     "excludes.txt",
     "token.txt",
     "signing-token.txt",
-] + glob(["import/v*/*"]))
+])
+
+filegroup(
+    name = "import",
+    srcs = glob(["import/v*/*.yaml"],
+)
 
 genrule(
     name = "empty",
