@@ -11,7 +11,7 @@ exports_files([
 
 filegroup(
     name = "import",
-    srcs = glob(["import/v*/*.yaml"]),
+    srcs = glob(["import/v*/*"]),
 )
 
 genrule(
