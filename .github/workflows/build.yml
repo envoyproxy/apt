@@ -29,6 +29,7 @@ jobs:
     - run: |
         sudo mkdir /opt/build
         sudo chown runner:docker /opt/build
+        echo ${{ github.token }} > debs/token.txt
         ./build-repository.sh
         du -ch /opt/build
         du -ch ~/.cache
