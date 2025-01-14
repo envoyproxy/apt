@@ -148,7 +148,7 @@ PUBLISH_ENV = {
     "APTLY_BIN": "$(location @aptly)",
     "MAINTAINER_KEY": "$(location //:envoy-maintainers-public.key)",
     "APTLY_CONF": "$(location //:aptly-config)",
-    "DEBS": "$(location :debs)",
+    "DEBS": "$(location :debs-publish)",
     "DEBS_ROOT": "$${APT_ROOT}/repository",
     "SIGNING_TOKEN": "$(location :signing-token)",
 }
