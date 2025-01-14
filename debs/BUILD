@@ -7,7 +7,7 @@ exports_files([
     "excludes.txt",
     "token.txt",
     "signing-token.txt",
-])
+] + glob(["imports/v*/*"]))
 
 genrule(
     name = "empty",
@@ -148,6 +148,12 @@ PUBLISH_ENV = {
     "SIGNING_TOKEN": "$(location :signing-token)",
 }
 
+label_flag(
+    name = "debs-publish",
+    build_setting_default = ":debs",
+    visibility = ["//visibility:public"],
+)
+
 sh_binary(
     name = "publish",
     srcs = ["publish.sh"],
@@ -159,7 +165,7 @@ sh_binary(
         "@aptly",
         "//:aptly-config",
         "//:envoy-maintainers-public.key",
-        ":debs",
+        ":debs-publish",
         ":signing-token",
     ],
     visibility = ["//visibility:public"],

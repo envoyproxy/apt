@@ -19,6 +19,8 @@ common:debs-ci --config=ci
 common:debs-ci --//debs:excludes=//debs:excludes.txt
 common:debs-ci --//debs:token=//debs:token.txt
 
+common:debs-publish --//debs:debs-publish=//debs:import
+
 common:publish-ci --config=debs-ci
 common:publish-ci --//tools/tarball:target=//:html
 common:publish-ci --//tools/tarball:overwrite=//tools/tarball:true
