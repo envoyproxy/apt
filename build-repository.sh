@@ -105,6 +105,7 @@ main () {
     bazel run \
           "${bazel_args[@]}" \
           --config=debug-bazel \
+          --config=debs-publish \
           //tools/tarball:unpack \
           $OUTPUT_DIR
 }
