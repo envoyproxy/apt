@@ -180,7 +180,7 @@ HTML_BUILD_CMD = """
 export APTLY_BIN="$(location @aptly)"
 export MAINTAINER_KEY="$(location //:envoy-maintainers-public.key)"
 export APTLY_CONF="$(location //:aptly-config)"
-export DEBS="$(location :debs)"
+export DEBS="$(location :debs-publish)"
 export DEBS_ROOT="$${APT_ROOT}/repository"
 export SIGNING_TOKEN="$(location :signing-token)"
 ls -alh /opt/build
@@ -199,7 +199,7 @@ genrule(
         "@aptly",
         "//:aptly-config",
         "//:envoy-maintainers-public.key",
-        ":debs",
+        ":debs-publish",
         ":publish",
         ":signing-token",
     ],
