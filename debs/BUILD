@@ -139,14 +139,25 @@ fetch_debs(
     excludes = ":excludes",
 )
 
+filegroup(
+    name = "import",
+    srcs = glob(["import/v*/*"]),
+)
+
 PUBLISH_ENV = {
     "APTLY_BIN": "$(location @aptly)",
     "MAINTAINER_KEY": "$(location //:envoy-maintainers-public.key)",
     "APTLY_CONF": "$(location //:aptly-config)",
-    "DEBS": "$(location :debs)",
+    "DEBS": "$(locations :debs-publish)",
     "DEBS_ROOT": "$${APT_ROOT}/repository",
     "SIGNING_TOKEN": "$(location :signing-token)",
 }
+
+label_flag(
+    name = "debs-publish",
+    build_setting_default = ":debs",
+    visibility = ["//visibility:public"],
+)
 
 sh_binary(
     name = "publish",
@@ -159,7 +170,7 @@ sh_binary(
         "@aptly",
         "//:aptly-config",
         "//:envoy-maintainers-public.key",
-        ":debs",
+        ":debs-publish",
         ":signing-token",
     ],
     visibility = ["//visibility:public"],
@@ -169,9 +180,10 @@ HTML_BUILD_CMD = """
 export APTLY_BIN="$(location @aptly)"
 export MAINTAINER_KEY="$(location //:envoy-maintainers-public.key)"
 export APTLY_CONF="$(location //:aptly-config)"
-export DEBS="$(location :debs)"
+export DEBS="$(locations :debs-publish)"
 export DEBS_ROOT="$${APT_ROOT}/repository"
 export SIGNING_TOKEN="$(location :signing-token)"
+ls -alh /opt/build
 $(location :publish)
 tar hcf $@ -C $${APT_ROOT}/html .
 """
@@ -187,7 +199,7 @@ genrule(
         "@aptly",
         "//:aptly-config",
         "//:envoy-maintainers-public.key",
-        ":debs",
+        ":debs-publish",
         ":publish",
         ":signing-token",
     ],
