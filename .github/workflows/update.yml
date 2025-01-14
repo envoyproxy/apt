@@ -42,5 +42,5 @@ jobs:
     - run: |
         du -ch ./bazel-bin/debs/debs/
         ls -l ./bazel-bin/debs/debs/
-        gsutil -m rsync ./bazel-bin/debs/debs/ gs://envoy-apt-cache/debs
+        gsutil -m rsync -r ./bazel-bin/debs/debs/ gs://envoy-apt-cache/debs
       if: ${{ github.event_name != 'pull_request' }}
