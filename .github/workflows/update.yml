@@ -21,7 +21,7 @@ jobs:
 
     - run: |
         mkdir ./debs/import
-        gsutil -mq rsync gs://envoy-apt-cache/debs ./debs/import/
+        gsutil -mq rsync -r gs://envoy-apt-cache/debs ./debs/import/
         ls -alh debs/import/
 
     - run: |
