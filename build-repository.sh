@@ -107,6 +107,7 @@ main () {
           --config=debug-bazel \
           --config=debs-publish \
           --sandbox_writable_path=/opt/build \
+          --sandbox_writable_path=/home/runner/.gnupg/ \
           //tools/tarball:unpack \
           $OUTPUT_DIR
 }
