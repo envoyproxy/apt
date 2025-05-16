@@ -1,6 +1,7 @@
 [build]
 publish = "html"
 command = "./build-repository.sh"
+ignore = "./netlify-should-run.sh"
 
 [build.environment]
   BAZELISK_HOME="/opt/build/cache/bazelisk"

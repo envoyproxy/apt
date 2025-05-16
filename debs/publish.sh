@@ -17,6 +17,9 @@ if [[ -z "$SIGNING_KEY" ]]; then
     exit 1
 fi
 
+if [[ -n "$DEBS" ]]; then
+    DEBS="$(dirname $(dirname $(echo ${DEBS} | cut -d' ' -f1)))"
+fi
 
 _aptly () {
     "${APTLY[@]}" -- "${@}"
@@ -41,6 +44,7 @@ create_dirs () {
 
 unpack_debs () {
     if [[ -d "$DEBS" ]]; then
+        DEBS_ROOT=$DEBS
         return 0
     elif [[ -s "$DEBS" ]]; then
         tar xf "$DEBS" -C "$DEBS_ROOT"
